@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlmodel
+passlib[bcrypt]
+python-jose
+boto3
+qdrant-client
+requests
