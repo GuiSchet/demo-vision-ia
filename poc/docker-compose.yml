@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  minio:
+    image: minio/minio:RELEASE.2025-05-01T00-00-00Z
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    volumes:
+      - minio_data:/data
+    networks: [appnet]
+
+  qdrant:
+    image: qdrant/qdrant:v1.2.0
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks: [appnet]
+
+  frame-processor:
+    build: ./frame-processor
+    environment:
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: cctv
+      VECTOR_DB_URL: http://qdrant:6333
+      LLM_API_URL: https://api.qwen.ai/v1/vision
+      LLM_API_KEY: ${QWEN_API_KEY}
+    depends_on: [minio, qdrant]
+    networks: [appnet]
+
+  api:
+    build: ./backend
+    entrypoint: ["/bin/sh","-c","/entrypoint.sh && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    environment:
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_BUCKET: cctv
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: secret123
+      VECTOR_DB_URL: http://qdrant:6333
+      QWEN_API_URL: https://api.qwen.ai/v1/vision
+      QWEN_API_KEY: ${QWEN_API_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    volumes:
+      - ./backend/users.db:/app/users.db
+      - ./scripts/preload_videos.sh:/entrypoint.sh
+      - ./videos:/videos
+    depends_on: [minio, qdrant]
+    ports:
+      - "8000:8000"
+    networks: [appnet]
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    networks: [appnet]
+
+volumes:
+  minio_data:
+  qdrant_data:
+
+networks:
+  appnet:
+    driver: bridge
