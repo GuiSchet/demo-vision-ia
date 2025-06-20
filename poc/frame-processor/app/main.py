@@ -1,5 +1,10 @@
 import time
-import yaml
+try:
+    import yaml
+except ImportError as exc:  # pragma: no cover - runtime dependency check
+    raise SystemExit(
+        "PyYAML is not installed. Run `pip install -r poc/frame-processor/requirements.txt`"
+    ) from exc
 from .processor import FrameProcessor
 
 

@@ -36,6 +36,23 @@ poc/
 
 The backend will expose `http://localhost:8000` and the frontend will be available on `http://localhost:3000`.
 
+### Running services without Docker
+
+If you want to execute the backend or frame processor directly with Python,
+install their requirements first:
+
+```bash
+pip install -r poc/backend/requirements.txt
+pip install -r poc/frame-processor/requirements.txt
+```
+
+After installing the packages you can start the services with:
+
+```bash
+python poc/backend/app/main.py
+python poc/frame-processor/app/main.py
+```
+
 ## Using the application
 
 - Obtain a token by sending a POST request to `/auth/login` with form fields `username` and `password` (default user is `admin`/`admin123`).
