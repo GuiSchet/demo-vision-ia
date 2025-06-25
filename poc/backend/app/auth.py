@@ -45,7 +45,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if not user:
         raise HTTPException(status_code=400, detail='Incorrect credentials')
     token = create_access_token({"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "username": user.username,
+            "id": str(user.id)
+        }
+    }
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
