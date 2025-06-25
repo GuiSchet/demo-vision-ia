@@ -5,7 +5,6 @@ from botocore.client import Config
 import cv2
 import requests
 import time
-import yaml
 from qdrant_client import QdrantClient
 
 def get_image_embedding(data: bytes, api_url: str, api_key: str):
@@ -16,11 +15,6 @@ def get_image_embedding(data: bytes, api_url: str, api_key: str):
     )
     resp.raise_for_status()
     return resp.json().get('embedding', [])
-
-def load_config():
-    config_path = 'config.yaml'  # Config file is in the same directory as main.py
-    with open(config_path) as f:
-        return yaml.safe_load(f)
 
 def list_videos(s3, bucket):
     resp = s3.list_objects_v2(Bucket=bucket)
@@ -53,20 +47,27 @@ def ensure_bucket_exists(s3, bucket):
         s3.create_bucket(Bucket=bucket)
 
 def main():
-    cfg = load_config()
+    # Leer configuración desde variables de entorno
+    s3_endpoint = os.environ.get('MINIO_ENDPOINT', 'http://minio:9000')
+    s3_bucket = os.environ.get('MINIO_BUCKET', 'cctv')
+    s3_access_key = os.environ.get('MINIO_ACCESS_KEY', 'admin')
+    s3_secret_key = os.environ.get('MINIO_SECRET_KEY', 'secret123')
+    vector_db_url = os.environ.get('VECTOR_DB_URL', 'http://qdrant:6333')
+    llm_api_url = os.environ.get('QWEN_API_URL', 'https://api.qwen.ai/v1/vision')
+    llm_api_key = os.environ.get('QWEN_API_KEY', 'CHANGE_ME')
+    frame_interval_sec = int(os.environ.get('FRAME_INTERVAL_SEC', 5))
+
     s3 = boto3.client('s3',
-                     endpoint_url=cfg['s3_endpoint'],
-                     aws_access_key_id='admin',
-                     aws_secret_access_key='secret123',
+                     endpoint_url=s3_endpoint,
+                     aws_access_key_id=s3_access_key,
+                     aws_secret_access_key=s3_secret_key,
                      aws_session_token=None,
                      config=Config(signature_version='s3v4'),
                      verify=False)
-    bucket = cfg['s3_bucket']
-    ensure_bucket_exists(s3, bucket)  # Create bucket if it doesn't exist
-    qdrant = QdrantClient(url=cfg['vector_db_url'])
-    interval = cfg.get('frame_interval_sec', 5)
-    llm_api_url = cfg['llm_api_url']
-    llm_api_key = cfg['llm_api_key']
+    bucket = s3_bucket
+    ensure_bucket_exists(s3, bucket)
+    qdrant = QdrantClient(url=vector_db_url)
+    interval = frame_interval_sec
     processed = set()
     while True:
         for key in list_videos(s3, bucket):
