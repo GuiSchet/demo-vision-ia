@@ -3,5 +3,6 @@ RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY config.yaml app/ ./
-CMD ["python", "-u", "app/main.py"]
+COPY app/ ./
+COPY config.yaml ./
+CMD ["python", "-u", "main.py"]

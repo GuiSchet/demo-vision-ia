@@ -6,3 +6,4 @@ python-jose
 boto3
 qdrant-client
 requests
+python-multipart

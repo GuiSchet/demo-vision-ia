@@ -1,13 +1,19 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "build": "echo building...",
-    "start": "serve -s build -l 3000"
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview --port 3000"
   },
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "video.js": "^8.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite": "^5.0.0"
   }
 }
