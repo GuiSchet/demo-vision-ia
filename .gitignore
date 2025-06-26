@@ -1,0 +1,89 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variable files
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node modules and build outputs
+node_modules/
+.npm/
+.pnp/
+.pnp.js
+
+.next/
+dist/
+out/
+build/
+.cache/
+.turbo/
+coverage/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+env/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+egss/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-wheel-metadata/
+.cache/
+.pytest_cache/
+htmlcov/
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Docker related
+*.docker
+docker-compose.override.yml
+
+# Miscellaneous
+*.tgz
+*.bak
+*.tmp 

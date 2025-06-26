@@ -1,6 +1,0 @@
-s3_endpoint: http://minio:9000
-s3_bucket: cctv
-vector_db_url: http://qdrant:6333
-llm_api_url: https://api.qwen.ai/v1/vision
-llm_api_key: CHANGE_ME
-frame_interval_sec: 5
